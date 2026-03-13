@@ -1,0 +1,176 @@
+/* =========================
+   ILLUST SAMPLE
+========================= */
+
+.illust-sample{
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+}
+
+.illust-sample__viewport{
+  width:100%;
+  overflow:hidden;
+  border-radius:26px;
+}
+
+.illust-sample__track{
+  display:flex;
+  gap:26px;
+  will-change:transform;
+}
+
+.illust-card{
+  flex:0 0 72%;
+  display:flex;
+  flex-direction:column;
+
+  border-radius:26px;
+  overflow:hidden;
+
+  background:linear-gradient(180deg,#ffffff,#f7f9fc);
+  border:1px solid rgba(120,138,160,0.14);
+
+  box-shadow:0 14px 32px rgba(56,70,88,0.06);
+
+  transition:
+    transform .3s ease,
+    box-shadow .3s ease;
+}
+
+.illust-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 20px 40px rgba(56,70,88,0.12);
+}
+
+.illust-card__image{
+  width:100%;
+  aspect-ratio:4 / 3;
+  overflow:hidden;
+  background:#eef3f8;
+}
+
+.illust-card__image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.illust-card__body{
+  padding:20px 22px 24px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.illust-card__title{
+  margin:0;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-0.02em;
+}
+
+.illust-card__desc{
+  margin:0;
+  font-size:15px;
+  line-height:1.7;
+  color:var(--text-sub);
+}
+
+/* controls */
+
+.illust-sample__controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin-top:20px;
+}
+
+.illust-sample__nav{
+  width:42px;
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:999px;
+
+  background:linear-gradient(#fff,#eef3f8);
+  border:1px solid rgba(120,138,160,0.14);
+
+  cursor:pointer;
+
+  font-size:22px;
+}
+
+.illust-sample__dots{
+  display:flex;
+  gap:8px;
+}
+
+.illust-sample__dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:#c9d3df;
+}
+
+.illust-sample__dot.is-active{
+  background:#6b7f97;
+  transform:scale(1.2);
+}
+
+.illust-sample__controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin-top:20px;
+}
+
+.illust-sample__nav{
+  width:42px;
+  height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(120,138,160,0.14);
+  border-radius:999px;
+  background:linear-gradient(180deg,#ffffff 0%, #eef3f8 100%);
+  color:var(--accent);
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(56,70,88,0.05);
+  font-size:24px;
+  line-height:1;
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.illust-sample__nav:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 20px rgba(56,70,88,0.08);
+}
+
+.illust-sample__dots{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.illust-sample__dot{
+  width:9px;
+  height:9px;
+  padding:0;
+  border:0;
+  border-radius:999px;
+  background:#c9d3df;
+  cursor:pointer;
+  transition:transform 0.2s ease, background 0.2s ease;
+}
+
+.illust-sample__dot.is-active{
+  background:#6b7f97;
+  transform:scale(1.18);
+}

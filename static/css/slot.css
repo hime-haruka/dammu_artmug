@@ -1,0 +1,148 @@
+/* =========================
+   SLOT BOARD
+========================= */
+
+.slot-board{
+  width:100%;
+  max-width:920px;
+  margin:0 auto;
+}
+
+.slot-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:18px;
+  padding: 40px 0 15px 0;
+}
+
+
+/* =========================
+   SLOT CARD
+========================= */
+#slots .section-accordion__inner {
+    background-color: #edf2f7;
+    border-radius: 20px;
+}
+
+.slot-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+
+  min-height:112px;
+  padding:22px 24px;
+
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(248,250,253,0.94) 100%);
+  border:1px solid rgba(120,138,160,0.14);
+  box-shadow:0 10px 22px rgba(56,70,88,0.05);
+}
+
+.slot-card__head{
+  flex:0 0 auto;
+}
+
+.slot-card__month{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  min-width:88px;
+  min-height:52px;
+  padding:8px 14px;
+
+  border-radius:14px;
+
+  font-family:"Daeojamjil","Pretendard","Noto Sans KR",sans-serif;
+  font-size:30px;
+  line-height:1;
+  letter-spacing:-0.04em;
+  color:#2f3946;
+  white-space:nowrap;
+}
+
+
+/* =========================
+   SLOT ICONS
+========================= */
+
+.slot-card__slots{
+  flex:1 1 auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:10px;
+  min-height:48px;
+}
+
+.slot-heart{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  width:42px;
+  height:42px;
+  padding:0;
+
+  border-radius:12px;
+
+  font-family:"Mona12emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: 30px;
+  line-height:1;
+  image-rendering:pixelated;
+  user-select:none;
+
+  position:relative;
+}
+
+.slot-heart::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  display:block;
+  border-radius:inherit;
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,0.42),
+    rgba(255,255,255,0)
+  );
+  pointer-events:none;
+}
+
+.slot-heart.is-closed{
+  color:#f4cc17;
+  text-shadow:
+    0 0 0 #f4cc17,
+    1px 0 0 #f4cc17;
+}
+
+.slot-heart.is-open{
+  color:#cfcfd4;
+  text-shadow:
+    0 0 0 #cfcfd4,
+    1px 0 0 #cfcfd4;
+}
+
+.slot-empty{
+  margin:0;
+  text-align:center;
+  color:var(--text-sub);
+  font-size:15px;
+  line-height:1.7;
+}
+
+
+/* =========================
+   NOTE
+========================= */
+
+.slot-note{
+  margin:18px 0 0;
+  text-align:center;
+  font-size:24px;
+  line-height:1.7;
+  color:var(--text-sub);
+  padding-bottom: 30px;
+}
