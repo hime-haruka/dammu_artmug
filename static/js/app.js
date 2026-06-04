@@ -1066,6 +1066,14 @@ function initVideoModal() {
   function openVideoModal(videoId) {
     if (!videoId) return;
 
+    // iframe으로 임베드된 아트머그 페이지에서는 내부 fixed 모달이
+    // 부모 페이지 높이/overflow의 영향을 받아 잘릴 수 있어서,
+    // 부모 페이지 스크립트가 있으면 부모 기준 모달로 먼저 열어준다.
+    if (window.parent && window.parent !== window) {
+      postToParent({ type: "DAMMU_OPEN_MEDIA", mediaType: "video", videoId });
+      return;
+    }
+
     iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
     modal.hidden = false;
     document.body.classList.add("is-video-modal-open");

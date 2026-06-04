@@ -4,6 +4,7 @@
   var FRAME_KEYS = ['dammu_artmug', 'dammu-artmug', 'dammu'];
   var STYLE_ID = 'dammu-artmug-parent-style';
   var MODAL_ID = 'dammu-artmug-parent-modal';
+  var VIDEO_EMBED_BASE = 'https://www.youtube.com/embed/';
   var lastHeight = 0;
   var timer = null;
 
@@ -32,6 +33,11 @@
       '.dammu-parent-modal.is-open{display:flex}',
       '.dammu-parent-modal__panel{position:relative;width:auto;max-width:min(94vw,1280px);max-height:90vh;border-radius:24px;background:#fff;box-shadow:0 30px 100px rgba(18,24,32,.34);overflow:hidden}',
       '.dammu-parent-modal__img{display:block;max-width:100%;max-height:90vh;object-fit:contain;background:#fff}',
+      '.dammu-parent-modal__video{display:none;position:relative;width:min(90vw,1120px);aspect-ratio:16/9;background:#000}',
+      '.dammu-parent-modal__video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}',
+      '.dammu-parent-modal.is-video .dammu-parent-modal__panel{width:min(90vw,1120px);background:#000}',
+      '.dammu-parent-modal.is-video .dammu-parent-modal__img{display:none}',
+      '.dammu-parent-modal.is-video .dammu-parent-modal__video{display:block}',
       '.dammu-parent-modal__close{position:absolute;top:12px;right:12px;width:42px;height:42px;border:1px solid rgba(255,255,255,.24);border-radius:50%;background:rgba(34,42,52,.64);color:#fff;font-size:26px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.18)}'
     ].join('');
     document.head.appendChild(style);
@@ -101,7 +107,7 @@
     m = document.createElement('div');
     m.id = MODAL_ID;
     m.className = 'dammu-parent-modal';
-    m.innerHTML = '<div class="dammu-parent-modal__panel"><button type="button" class="dammu-parent-modal__close" aria-label="닫기">×</button><img class="dammu-parent-modal__img" alt="이미지 크게 보기"></div>';
+    m.innerHTML = '<div class="dammu-parent-modal__panel"><button type="button" class="dammu-parent-modal__close" aria-label="닫기">×</button><img class="dammu-parent-modal__img" alt="이미지 크게 보기"><div class="dammu-parent-modal__video"><iframe class="dammu-parent-modal__iframe" title="YouTube video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div></div>'; 
     m.addEventListener('click', function (event) { if (event.target === m) closeModal(); });
     m.querySelector('button').addEventListener('click', closeModal);
     document.body.appendChild(m);
@@ -112,7 +118,24 @@
     if (!src) return;
     var m = modal();
     var img = m.querySelector('img');
+    var iframe = m.querySelector('iframe');
+    m.classList.remove('is-video');
+    if (iframe) iframe.removeAttribute('src');
     img.src = src;
+    m.classList.add('is-open');
+  }
+
+  function openVideoModal(videoId) {
+    if (!videoId) return;
+    var safeId = String(videoId).match(/^[a-zA-Z0-9_-]{11}$/) ? String(videoId) : '';
+    if (!safeId) return;
+
+    var m = modal();
+    var img = m.querySelector('img');
+    var iframe = m.querySelector('iframe');
+    if (img) img.removeAttribute('src');
+    m.classList.add('is-video');
+    if (iframe) iframe.src = VIDEO_EMBED_BASE + safeId + '?autoplay=1&rel=0';
     m.classList.add('is-open');
   }
 
@@ -120,8 +143,11 @@
     var m = document.getElementById(MODAL_ID);
     if (!m) return;
     m.classList.remove('is-open');
+    m.classList.remove('is-video');
     var img = m.querySelector('img');
+    var iframe = m.querySelector('iframe');
     if (img) img.removeAttribute('src');
+    if (iframe) iframe.removeAttribute('src');
   }
 
   function bind() {
@@ -140,6 +166,7 @@
 
       if (data.type === 'DAMMU_HEIGHT') setHeight(data.height);
       if (data.type === 'DAMMU_OPEN_MEDIA' && data.mediaType === 'image') openModal(data.src);
+      if (data.type === 'DAMMU_OPEN_MEDIA' && data.mediaType === 'video') openVideoModal(data.videoId);
       if (data.type === 'DAMMU_READY') requestHeight();
     });
 
