@@ -13,6 +13,11 @@ const SHEETS = {
     "https://docs.google.com/spreadsheets/d/e/2PACX-1vTATJpFhtZQRUDPE8-Tryx2F9B3nzxaxeSW_EroKwxWMx-xR0M8QH2f6iaTMZGM8BqMFvccnD2dVofH/pub?gid=1401728046&single=true&output=csv",
 };
 
+const DAMMU_PARENT_SOURCE = "dammu-artmug";
+const DAMMU_PARENT_TARGET = "dammu-parent";
+let dammuLastSentHeight = 0;
+let dammuHeightTimer = null;
+
 const App = {
   state: {
     metaRows: [],
@@ -59,6 +64,11 @@ const App = {
       initAccordion();
       initSliders();
       initVideoModal();
+      initParentBridge();
+      requestParentHeight(80);
+      [180, 500, 1000, 1800].forEach(ms => {
+        setTimeout(() => sendParentHeight(true), ms);
+      });
     } catch (error) {
       console.error("[App.init] failed:", error);
     }
@@ -296,6 +306,7 @@ function renderSectionMeta(rows = []) {
                 src="${escapeAttribute(imageUrl)}"
                 alt="인트로 이미지"
                 loading="eager"
+                data-image="${escapeAttribute(imageUrl)}"
               >
             </div>
           `
@@ -341,6 +352,7 @@ function renderSectionMeta(rows = []) {
                     src="${escapeAttribute(imageUrl)}"
                     alt="${escapeAttribute(title)} 섹션 이미지"
                     loading="lazy"
+                    data-image="${escapeAttribute(imageUrl)}"
                   >
                 </div>
               `
@@ -380,6 +392,8 @@ function initAccordion() {
       if (accordion.classList.contains("is-open")) {
         panel.style.maxHeight = "none";
       }
+
+      requestParentHeight(80);
     });
   });
 
@@ -412,6 +426,7 @@ function toggleAccordion(accordion, panel, willOpen) {
 
     requestAnimationFrame(() => {
       panel.style.maxHeight = `${panel.scrollHeight}px`;
+      requestParentHeight(80);
     });
   } else {
     header.setAttribute("aria-expanded", "false");
@@ -423,6 +438,7 @@ function toggleAccordion(accordion, panel, willOpen) {
     requestAnimationFrame(() => {
       panel.style.maxHeight = "0px";
       accordion.classList.remove("is-open");
+      requestParentHeight(360);
     });
   }
 }
@@ -741,6 +757,7 @@ function renderIllustSampleCard(row) {
           src="${escapeAttribute(row.img)}"
           alt="${escapeAttribute(row.title || "일러스트 샘플")}"
           loading="lazy"
+          data-image="${escapeAttribute(row.img)}"
         >
       </div>
 
@@ -1059,6 +1076,85 @@ function initVideoModal() {
     modal.hidden = true;
     document.body.classList.remove("is-video-modal-open");
   }
+}
+
+/* =========================
+   PARENT PAGE BRIDGE
+========================= */
+
+function initParentBridge() {
+  if (window.__dammuParentBridgeBound) return;
+  window.__dammuParentBridgeBound = true;
+
+  window.addEventListener("load", () => sendParentHeight(true));
+  window.addEventListener("resize", debounce(() => requestParentHeight(80), 120));
+
+  document.addEventListener("load", event => {
+    const tag = event.target?.tagName?.toLowerCase?.() || "";
+    if (tag === "img" || tag === "iframe" || tag === "video") {
+      requestParentHeight(120);
+    }
+  }, true);
+
+  document.addEventListener("click", event => {
+    const image = event.target.closest?.("img[data-image]");
+    if (!image) return;
+
+    const src = image.dataset.image || image.currentSrc || image.src;
+    if (!src) return;
+
+    event.preventDefault();
+    postToParent({ type: "DAMMU_OPEN_MEDIA", mediaType: "image", src });
+  });
+
+  window.addEventListener("message", event => {
+    const data = event.data || {};
+    if (data.source !== DAMMU_PARENT_TARGET) return;
+
+    if (data.type === "DAMMU_REQUEST_HEIGHT") {
+      sendParentHeight(true);
+    }
+  });
+
+  postToParent({ type: "DAMMU_READY" });
+}
+
+function postToParent(data = {}) {
+  data.source = DAMMU_PARENT_SOURCE;
+  window.parent.postMessage(data, "*");
+}
+
+function measurePageHeight() {
+  const body = document.body;
+  const html = document.documentElement;
+  const main = document.querySelector("main");
+
+  const values = [
+    body?.scrollHeight || 0,
+    body?.offsetHeight || 0,
+    html?.scrollHeight || 0,
+    html?.offsetHeight || 0,
+    main ? (main.offsetTop || 0) + (main.scrollHeight || main.getBoundingClientRect().height || 0) : 0,
+  ];
+
+  return Math.max(720, Math.ceil(Math.max(...values)));
+}
+
+function requestParentHeight(delay = 0) {
+  clearTimeout(dammuHeightTimer);
+  dammuHeightTimer = setTimeout(() => sendParentHeight(false), delay);
+}
+
+function sendParentHeight(force = false) {
+  const height = measurePageHeight();
+  if (!height) return;
+
+  if (!force && dammuLastSentHeight && Math.abs(height - dammuLastSentHeight) < 20) {
+    return;
+  }
+
+  dammuLastSentHeight = height;
+  postToParent({ type: "DAMMU_HEIGHT", height });
 }
 
 /* =========================

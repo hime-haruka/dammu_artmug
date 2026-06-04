@@ -444,3 +444,10 @@ a{
 body.is-video-modal-open{
   overflow:hidden;
 }
+/* =========================
+   PARENT IMAGE MODAL HOOK
+========================= */
+
+img[data-image]{
+  cursor: zoom-in;
+}
