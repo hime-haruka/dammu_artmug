@@ -1,7 +1,9 @@
 (function () {
   'use strict';
 
-  var FRAME_KEYS = ['dammu_artmug', 'dammu-artmug', 'dammu'];
+  var IFRAME_ORIGIN = 'https://hime-haruka.github.io';
+  var IFRAME_PATH = 'hime-haruka.github.io/dammu_artmug';
+  var FRAME_KEYS = [IFRAME_PATH, 'dammu_artmug', 'dammu-artmug', 'dammu'];
   var STYLE_ID = 'dammu-artmug-parent-style';
   var MODAL_ID = 'dammu-artmug-parent-modal';
   var VIDEO_EMBED_BASE = 'https://www.youtube.com/embed/';
@@ -18,9 +20,7 @@
   }
 
   function origin() {
-    var iframe = frame();
-    if (!iframe || !iframe.src) return '*';
-    try { return new URL(iframe.src, location.href).origin; } catch (e) { return '*'; }
+    return IFRAME_ORIGIN;
   }
 
   function css() {
